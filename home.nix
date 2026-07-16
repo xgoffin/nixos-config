@@ -102,7 +102,7 @@
       switch-input-source = [ "<Super>space" ];
     };
     "org/gnome/desktop/session" = {
-      idle-delay = "uint32 0";
+      idle-delay = lib.hm.gvariant.mkUint32 0;
     };
     "org/gnome/settings-daemon/plugins/power" = {
       sleep-inactive-ac-type = "nothing";
