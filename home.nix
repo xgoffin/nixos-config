@@ -53,6 +53,7 @@
     awscli
     golangci-lint
     go-tools
+    gopls
     fortune
     opencode
     wl-clipboard
@@ -86,9 +87,7 @@
     gnomeExtensions.dash-to-dock
     gnomeExtensions.just-perfection
     gnomeExtensions.no-overview
-    gnomeExtensions.pop-shell
     gnomeExtensions.resource-monitor
-    gnomeExtensions.just-shows-memory-usage
   ];
 
   dconf.enable = true;
@@ -107,6 +106,10 @@
     };
     "org/gnome/settings-daemon/plugins/power" = {
       sleep-inactive-ac-type = "nothing";
+    };
+    "org/gnome/Console" = {
+      audible-bell = false;
+      visual-bell = false;
     };
     "org/gnome/desktop/screensaver" = {
       lock-enabled = false;
@@ -169,15 +172,16 @@
       displaymode="primary";
       extensionposition="right";
       iconsposition="left";
-      leftclickstatus="custom-program";
+      leftclickstatus="gnome-system-monitor";
       netethstatus=false;
       netwlanstatus=false;
       rammonitor="used";
-      ramstatus=false;
-      ramunit="numeric";
+      ramstatus=true;
+      ramunit="perc";
       refreshtime=10;
       thermalcputemperaturestatus=true;
       thermalcputemperaturewidth=0;
+      swapstatus=false;
     };
   };
 
