@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   home.username = "xgoffin";
@@ -14,6 +14,7 @@
     mozc
     zip
     xz
+    tree
     unzip
     dnsutils
     cowsay
@@ -21,7 +22,18 @@
     tree
     gnupg
     go
-    rbenv
+    (ruby.withPackages (
+      ps: with ps; [
+        ruby-lsp
+        rubocop
+        date
+        bundler
+        psych
+        typhoeus
+        racc
+        pg
+      ]
+    ))
     nodejs
     postgresql
     cassandra
@@ -30,10 +42,46 @@
     slack
     discord
     kubectl
+    (pkgs.wrapHelm pkgs.kubernetes-helm {
+      plugins = with pkgs.kubernetes-helmPlugins; [
+        helm-diff
+        helm-secrets
+        helm-s3
+      ];
+    })
+    pinentry-curses
+    awscli
     golangci-lint
     go-tools
     fortune
     opencode
+    wl-clipboard
+    gnumake
+    gcc
+    stdenv
+    openssl
+    libyaml
+    pkg-config
+    sqlite
+    (pkgs.stdenv.mkDerivation {
+      name = "thrift";
+
+      src = pkgs.fetchurl {
+        url = "https://github.com/upfluence/thrift/releases/download/v2.7.0/thrift-ubuntu-24.04";
+        sha256 = "sha256-1fvl60oXPr6J4jjB8BhRSZXKUKwjPZ1xhSRQk+c6+/0=";
+      };
+
+      nativeBuildInputs = [ pkgs.autoPatchelfHook ];
+      buildInputs = [ pkgs.stdenv.cc.cc.lib ];
+
+      dontUnpack = true;
+
+      installPhase = ''
+                mkdir -p $out/bin
+                cp $src $out/bin/thrift
+                chmod +x $out/bin/thrift
+      '';
+    })
     gnomeExtensions.appindicator
     gnomeExtensions.dash-to-dock
     gnomeExtensions.just-perfection
@@ -57,11 +105,18 @@
     "org/gnome/desktop/session" = {
       idle-delay = "uint32 0";
     };
+    "org/gnome/settings-daemon/plugins/power" = {
+      sleep-inactive-ac-type = "nothing";
+    };
     "org/gnome/desktop/screensaver" = {
       lock-enabled = false;
     };
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
+    };
+    "org/gnome/desktop/sound" = {
+      event-sounds = false;
+      input-feedback-sound = false;
     };
     "org/gnome/mutter" = {
       overlay-key = "Super_L";
@@ -75,6 +130,7 @@
         "no-overview@fthx"
         "Resource_Monitor@Ory0n"
       ];
+      always-show-log-out = true;
     };
     "org/gnome/shell/extensions/user-theme" = {
       name = "Pop-dark";
@@ -141,6 +197,58 @@
     if [ -f ~/.bashrc.secrets ]; then
       source ~/.bashrc.secrets
     fi
+    [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+    # go path
+    export PATH=$PATH:/usr/local/go/bin
+    export PATH=$PATH:$HOME/go/bin
+    
+    # uds-gateway alias to save time
+    #alias uds-gateway="sudo -E /home/xgoffin/go/bin/uds-gateway"
+    alias uds-gateway="sudo -E env "PATH=$PATH" /home/xgoffin/go/bin/uds-gateway"
+
+    # Rubocop
+    export GITHUB_USERNAME=xgoffin
+    export BUNDLE_GITHUB__COM=x-access-token:$GITHUB_TOKEN
+    export BUNDLE_RUBYGEMS__PKG__GITHUB__COM=$GITHUB_USERNAME:$GITHUB_TOKEN
+    
+    # Add /usr/local/bin to PATH
+    export PATH="$PATH:/usr/local/bin"
+    
+    #fleetctl
+    export FLEETCTL_TUNNEL=bastion.upfluence.co
+    export FLEETCTL_ENDPOINT=http://upfluence-private.co:49153
+
+    # remove brew analytics wtf
+    export HOMEBREW_NO_ANALYTICS=1
+    export HOMEBREW_GITHUB_API_TOKEN=$GITHUB_TOKEN
+    
+    # golangci-lint aliases
+    alias golangci-lint-new="okta-go-mod -- golangci-lint -c ~/Code/action-golangci-lint/.golangci.yml run --new"
+    alias golangci-lint-full="okta-go-mod -- golangci-lint -c ~/Code/action-golangci-lint/.golangci.yml run"
+    
+    cowsick(){ for i in {1..10}; do xcowsay "I'm sick of this shit brother" & done; }
+    
+    source <(kubectl completion bash)
+
+    alias ":q"="exit"
+    alias rubocop="rubocop -c ~/Code/action-rubocop/.rubocop.yml"
+
+    amqp(){
+    edsctl --cluster-key ec2/rabbitmq/15672 --template "http://{{.Address}}" && echo ""
+    }
+
+    elasticsearch(){
+    ELASTICSEARCH_URL=$(edsctl --cluster-key ec2/elasticsearch-72/9200 --template "{{.Address}}")
+    }
+
+    redis(){
+    edsctl --cluster-key elasticache/cluster-redis-r7g-002-001 --template "{{.Port}}"
+    }
+
+    reuseScreenCapture(){
+    kill $(ps aux | grep gjs | grep Screencast | grep -v 'grep' | awk '{print $2}')
+    }
     '';
   };
   programs.vim = {
@@ -195,7 +303,7 @@
       set backspace=eol,start,indent
       set whichwrap+=<,>,h,l
        
-      " Ignore case when searching
+      " Ignore case when seahttps://www.reddit.com/r/gnome/comments/1smzxdj/am_i_hallucinating_or_was_there_a_logout_option/rching
       set ignorecase
        
       " When searching try to be smart about cases
@@ -332,11 +440,27 @@
     X-GNOME-Autostart-enabled=true
   '';
 
+# xdg.configFile."autostart/terminal.desktop".text = ''
+#   [Desktop Entry]
+#   Type=Application
+#   Name=Terminal
+#   Exec=gnome-terminal
+#   X-GNOME-Autostart-enabled=true
+# '';
+
   xdg.configFile."autostart/terminal.desktop".text = ''
     [Desktop Entry]
     Type=Application
     Name=Terminal
-    Exec=gnome-terminal
+    Exec=kgx
+    X-GNOME-Autostart-enabled=true
+  '';
+
+  xdg.configFile."autostart/firefox.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Firefox
+    Exec=firefox
     X-GNOME-Autostart-enabled=true
   '';
 
@@ -347,4 +471,18 @@
     Exec=gnome-clocks
     X-GNOME-Autostart-enabled=true
   '';
+
+  home.sessionVariables = {
+    LD_LIBRARY_PATH = lib.makeLibraryPath [
+      pkgs.curl
+      pkgs.libpq
+      pkgs.sqlite
+      pkgs.zlib
+      pkgs.icu
+      pkgs.openssl
+      pkgs.libyaml
+    ];
+    PKG_CONFIG_PATH = "${pkgs.libyaml.dev}/lib/pkgconfig";
+    CPATH = "${pkgs.libyaml.dev}/include";
+  };
 }

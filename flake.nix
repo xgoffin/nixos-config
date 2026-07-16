@@ -15,13 +15,16 @@
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
-   };
+    };
+
+    #man-tools.url = "path:/home/xgoffin/Code/man";
   };
 
   outputs = inputs@{ self, nixpkgs, home-manager, ... }: {
     # nixosConfigurations."<hostname>".config.system.build.toplevel must be a derivation
     nixosConfigurations.nixos= nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
+
       modules = [
     	./configuration.nix
             
@@ -30,6 +33,8 @@
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
+	        backupFileExtension = "bak";
+            extraSpecialArgs = { inherit inputs; };
             users.xgoffin = ./home.nix;
           };
         }
@@ -41,6 +46,27 @@
             HandleLidSwitchDocked = "ignore";
           };
         }
+        ({pkgs, ...}: {
+          services.dbus.packages = [pkgs.gcr];
+          programs.gnupg.agent = {
+            enable = true;
+          };
+        })
+        ({lib, pkgs, ...}: {
+          environment.variables = {
+            LD_LIBRARY_PATH = lib.makeLibraryPath [
+              pkgs.curl
+              pkgs.libpq
+              pkgs.sqlite
+              pkgs.zlib
+              pkgs.icu
+              pkgs.openssl
+              pkgs.libyaml
+            ];
+            PKG_CONFIG_PATH = "${pkgs.libyaml.dev}/lib/pkgconfig";
+            CPATH = "${pkgs.libyaml.dev}/include";
+          };
+        })
       ];
     };
   };
