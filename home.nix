@@ -22,6 +22,18 @@
     tree
     gnupg
     go
+    (python3.withPackages (
+      python-pkgs: with python-pkgs; [
+        pip
+        pyyaml
+        pygithub
+        jinja2
+        yq
+        dulwich
+        urllib3
+        requests
+      ]
+    ))
     (ruby.withPackages (
       ps: with ps; [
         ruby-lsp
