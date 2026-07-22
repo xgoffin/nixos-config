@@ -17,7 +17,22 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #man-tools.url = "path:/home/xgoffin/Code/man";
+    man-tools = {
+      url = "path:/home/xgoffin/Code/man";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    uds = {
+      url = "path:/home/xgoffin/Code/uds";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    helm-charts = {
+      url = "path:/home/xgoffin/Code/helm-charts";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    tcurl = {
+      url = "path:/home/xgoffin/Code/tcurl";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, home-manager, ... }: {

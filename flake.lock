@@ -18,6 +18,23 @@
         "type": "github"
       }
     },
+    "helm-charts": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784549622,
+        "narHash": "sha256-J0CFbUOgT7NFilKUM1FQXvyoGRnwwkdt8qT1GwwBRJg=",
+        "path": "/home/xgoffin/Code/helm-charts",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/xgoffin/Code/helm-charts",
+        "type": "path"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -37,6 +54,23 @@
         "ref": "release-26.05",
         "repo": "home-manager",
         "type": "github"
+      }
+    },
+    "man-tools": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784544431,
+        "narHash": "sha256-wdqLAXaLH4w3zkqMbu5aOx417otrLXFyU+s2eixRF94=",
+        "path": "/home/xgoffin/Code/man",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/xgoffin/Code/man",
+        "type": "path"
       }
     },
     "nix-github-actions": {
@@ -139,9 +173,13 @@
     },
     "root": {
       "inputs": {
+        "helm-charts": "helm-charts",
         "home-manager": "home-manager",
+        "man-tools": "man-tools",
         "nixops": "nixops",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs_2",
+        "tcurl": "tcurl",
+        "uds": "uds"
       }
     },
     "systems": {
@@ -188,6 +226,23 @@
         "type": "github"
       }
     },
+    "tcurl": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784549607,
+        "narHash": "sha256-Rq014wdhA7mtiufjAHSvRhg6SWcF6CxkD+CPrN+Vqdw=",
+        "path": "/home/xgoffin/Code/tcurl",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/xgoffin/Code/tcurl",
+        "type": "path"
+      }
+    },
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": [
@@ -208,6 +263,23 @@
         "owner": "numtide",
         "repo": "treefmt-nix",
         "type": "github"
+      }
+    },
+    "uds": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784542777,
+        "narHash": "sha256-YxH0AFyPEjsGw/9tQVjnmgVf3x69bRjd9a7Ms577TJE=",
+        "path": "/home/xgoffin/Code/uds",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/xgoffin/Code/uds",
+        "type": "path"
       }
     },
     "utils": {

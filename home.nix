@@ -100,6 +100,28 @@
     gnomeExtensions.just-perfection
     gnomeExtensions.no-overview
     gnomeExtensions.resource-monitor
+    inputs.uds.packages.x86_64-linux.uds-gateway
+    inputs.uds.packages.x86_64-linux.psql-user-provisioner
+    inputs.uds.packages.x86_64-linux.edsctl
+    inputs.uds.packages.x86_64-linux.sdsctl
+    inputs.uds.packages.x86_64-linux.smsctl
+    inputs.uds.packages.x86_64-linux.uds-cqlsh
+    inputs.uds.packages.x86_64-linux.uds-psql
+    inputs.uds.packages.x86_64-linux.uds-redis-cli
+    inputs.man-tools.packages.x86_64-linux.add_source           
+    inputs.man-tools.packages.x86_64-linux.aws-connector        
+    inputs.man-tools.packages.x86_64-linux.aws-mfa              
+    inputs.man-tools.packages.x86_64-linux.circleci-envset      
+    inputs.man-tools.packages.x86_64-linux.gh-actions-aws       
+    inputs.man-tools.packages.x86_64-linux.gh-actions-go-mod    
+    inputs.man-tools.packages.x86_64-linux.ghctl                
+    inputs.man-tools.packages.x86_64-linux.grin-import          
+    inputs.man-tools.packages.x86_64-linux.image-rollback       
+    inputs.man-tools.packages.x86_64-linux.okta-go-mod          
+    inputs.man-tools.packages.x86_64-linux.uds-aws-env          
+    inputs.man-tools.packages.x86_64-linux.youtube_amplification
+    inputs.helm-charts.packages.x86_64-linux.uchart
+    inputs.tcurl.packages.x86_64-linux.tcurl
   ];
 
   dconf.enable = true;
@@ -271,6 +293,7 @@
     enable = true;
     plugins = with pkgs.vimPlugins; [ vim-go coc-nvim ];
     settings = { ignorecase = true; };
+    defaultEditor = true;
     extraConfig = ''
       " Sets how many lines of history VIM has to remember
       set history=500
@@ -500,5 +523,6 @@
     ];
     PKG_CONFIG_PATH = "${pkgs.libyaml.dev}/lib/pkgconfig";
     CPATH = "${pkgs.libyaml.dev}/include";
+    EDITOR = "vim";
   };
 }
