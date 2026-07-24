@@ -44,6 +44,8 @@
         typhoeus
         racc
         pg
+        charlock_holmes
+        libxlsxwriter
       ]
     ))
     nodejs
@@ -74,6 +76,8 @@
     stdenv
     openssl
     libyaml
+    libpq
+    zlib
     pkg-config
     sqlite
     (pkgs.stdenv.mkDerivation {
@@ -243,7 +247,8 @@
     
     # uds-gateway alias to save time
     #alias uds-gateway="sudo -E /home/xgoffin/go/bin/uds-gateway"
-    alias uds-gateway="sudo -E env "PATH=$PATH" /home/xgoffin/go/bin/uds-gateway"
+    #alias uds-gateway="sudo -E env "PATH=$PATH" /home/xgoffin/go/bin/uds-gateway"
+    alias uds-gateway="sudo -E uds-gateway"
 
     # Rubocop
     export GITHUB_USERNAME=xgoffin
@@ -521,8 +526,8 @@
       pkgs.openssl
       pkgs.libyaml
     ];
-    PKG_CONFIG_PATH = "${pkgs.libyaml.dev}/lib/pkgconfig";
-    CPATH = "${pkgs.libyaml.dev}/include";
+    PKG_CONFIG_PATH = "${pkgs.libyaml.dev}/lib/pkgconfig;${pkgs.libpq.dev}/lib/pkgconfig;${pkgs.zlib.dev}/lib/pkgconfig";
+    CPATH = "${pkgs.libyaml.dev}/include;${pkgs.libpq.dev}/include;${pkgs.zlib.dev}/include";
     EDITOR = "vim";
   };
 }
