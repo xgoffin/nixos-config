@@ -19,6 +19,11 @@
     initrd.luks.devices.cryptroot.device = "/dev/disk/by-uuid/140c39de-3c5d-4525-b282-183db47e885e";
   };
 
+  hardware.ipu6 = {
+    enable = true;
+    platform = "ipu6ep";
+  };
+
   networking.hostName = "nixos"; # Define your hostname.
 
   # Configure network connections interactively with nmcli or nmtui.

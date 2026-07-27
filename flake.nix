@@ -1,12 +1,15 @@
 {
   description = "A template that shows all standard flake outputs";
 
-
   inputs = {
     # It is also possible to "inherit" an input from another input. This is useful to minimize
     # flake dependencies. For example, the following sets the nixpkgs input of the top-level flake
     # to be equal to the nixpkgs input of the nixops input of the top-level flake:
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # The value of the follows attribute is a sequence of input names denoting the path
     # of inputs to be followed from the root flake. Overrides and follows can be combined, e.g.
@@ -35,7 +38,7 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, ... }: {
+  outputs = inputs@{ self, nixpkgs, home-manager, nixos-hardware, ... }: {
     # nixosConfigurations."<hostname>".config.system.build.toplevel must be a derivation
     nixosConfigurations.nixos= nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
@@ -82,6 +85,8 @@
             CPATH = "${pkgs.libyaml.dev}/include";
           };
         })
+
+        nixos-hardware.nixosModules.dell-xps-13-9315
       ];
     };
   };
