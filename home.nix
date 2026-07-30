@@ -34,6 +34,7 @@
         requests
       ]
     ))
+    uv
     (ruby.withPackages (
       ps: with ps; [
         ruby-lsp
@@ -51,7 +52,9 @@
     nodejs
     postgresql
     cassandra
+    pass-wayland
     docker
+    docker-credential-helpers
     firefox
     slack
     discord
@@ -84,8 +87,8 @@
       name = "thrift";
 
       src = pkgs.fetchurl {
-        url = "https://github.com/upfluence/thrift/releases/download/v2.7.0/thrift-ubuntu-24.04";
-        sha256 = "sha256-1fvl60oXPr6J4jjB8BhRSZXKUKwjPZ1xhSRQk+c6+/0=";
+        url = "https://github.com/upfluence/thrift/releases/download/v2.7.5/thrift-ubuntu-24.04";
+        sha256 = "sha256-nr4i6EnUqNsCCePVBA20xVa+UTCKLlcftECzVzB3oGA=";
       };
 
       nativeBuildInputs = [ pkgs.autoPatchelfHook ];
@@ -104,6 +107,7 @@
     gnomeExtensions.just-perfection
     gnomeExtensions.no-overview
     gnomeExtensions.resource-monitor
+    gnomeExtensions.junk-notification-cleaner
     inputs.uds.packages.x86_64-linux.uds-gateway
     inputs.uds.packages.x86_64-linux.psql-user-provisioner
     inputs.uds.packages.x86_64-linux.edsctl
@@ -170,6 +174,7 @@
         "just-shows-memory-usage@troizet.github.com"
         "no-overview@fthx"
         "Resource_Monitor@Ory0n"
+        "junk-notification-cleaner@murar8.github.com"
       ];
       always-show-log-out = true;
     };
@@ -480,17 +485,9 @@
     [Desktop Entry]
     Type=Application
     Name=Discord
-    Exec=${pkgs.discord}/bin/discord
+    Exec=${pkgs.discord}/bin/discord --disable-gpu
     X-GNOME-Autostart-enabled=true
   '';
-
-# xdg.configFile."autostart/terminal.desktop".text = ''
-#   [Desktop Entry]
-#   Type=Application
-#   Name=Terminal
-#   Exec=gnome-terminal
-#   X-GNOME-Autostart-enabled=true
-# '';
 
   xdg.configFile."autostart/terminal.desktop".text = ''
     [Desktop Entry]
@@ -526,8 +523,8 @@
       pkgs.openssl
       pkgs.libyaml
     ];
-    PKG_CONFIG_PATH = "${pkgs.libyaml.dev}/lib/pkgconfig;${pkgs.libpq.dev}/lib/pkgconfig;${pkgs.zlib.dev}/lib/pkgconfig";
-    CPATH = "${pkgs.libyaml.dev}/include;${pkgs.libpq.dev}/include;${pkgs.zlib.dev}/include";
+    PKG_CONFIG_PATH = "${pkgs.libyaml.dev}/lib/pkgconfig:${pkgs.libpq.dev}/lib/pkgconfig:${pkgs.zlib.dev}/lib/pkgconfig:${pkgs.openssl.dev}/lib/pkgconfig";
+    CPATH = "${pkgs.libyaml.dev}/include:${pkgs.libpq.dev}/include:${pkgs.zlib.dev}/include:${pkgs.openssl.dev}/include";
     EDITOR = "vim";
   };
 }

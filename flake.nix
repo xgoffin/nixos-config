@@ -70,21 +70,6 @@
             enable = true;
           };
         })
-        ({lib, pkgs, ...}: {
-          environment.variables = {
-            LD_LIBRARY_PATH = lib.makeLibraryPath [
-              pkgs.curl
-              pkgs.libpq
-              pkgs.sqlite
-              pkgs.zlib
-              pkgs.icu
-              pkgs.openssl
-              pkgs.libyaml
-            ];
-            PKG_CONFIG_PATH = "${pkgs.libyaml.dev}/lib/pkgconfig";
-            CPATH = "${pkgs.libyaml.dev}/include";
-          };
-        })
 
         nixos-hardware.nixosModules.dell-xps-13-9315
       ];
