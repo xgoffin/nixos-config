@@ -9,7 +9,6 @@
     wget
     curl
     git
-    jq
     ibus
     mozc
     zip
@@ -21,115 +20,24 @@
     which
     tree
     gnupg
-    go
-    (python3.withPackages (
-      python-pkgs: with python-pkgs; [
-        pip
-        pyyaml
-        pygithub
-        jinja2
-        yq
-        dulwich
-        urllib3
-        requests
-      ]
-    ))
-    uv
-    (ruby.withPackages (
-      ps: with ps; [
-        ruby-lsp
-        rubocop
-        date
-        bundler
-        psych
-        typhoeus
-        racc
-        pg
-        charlock_holmes
-        libxlsxwriter
-      ]
-    ))
-    nodejs
-    postgresql
-    cassandra
-    pass-wayland
-    docker
-    docker-credential-helpers
     firefox
     slack
     discord
-    kubectl
-    (pkgs.wrapHelm pkgs.kubernetes-helm {
-      plugins = with pkgs.kubernetes-helmPlugins; [
-        helm-diff
-        helm-secrets
-        helm-s3
-      ];
-    })
     pinentry-curses
-    awscli
-    golangci-lint
-    go-tools
-    gopls
     fortune
     opencode
     wl-clipboard
-    gnumake
-    gcc
     stdenv
-    openssl
-    libyaml
-    libpq
-    zlib
-    pkg-config
-    sqlite
-    (pkgs.stdenv.mkDerivation {
-      name = "thrift";
-
-      src = pkgs.fetchurl {
-        url = "https://github.com/upfluence/thrift/releases/download/v2.7.5/thrift-ubuntu-24.04";
-        sha256 = "sha256-nr4i6EnUqNsCCePVBA20xVa+UTCKLlcftECzVzB3oGA=";
-      };
-
-      nativeBuildInputs = [ pkgs.autoPatchelfHook ];
-      buildInputs = [ pkgs.stdenv.cc.cc.lib ];
-
-      dontUnpack = true;
-
-      installPhase = ''
-                mkdir -p $out/bin
-                cp $src $out/bin/thrift
-                chmod +x $out/bin/thrift
-      '';
-    })
     gnomeExtensions.appindicator
     gnomeExtensions.dash-to-dock
     gnomeExtensions.just-perfection
     gnomeExtensions.no-overview
     gnomeExtensions.resource-monitor
     gnomeExtensions.junk-notification-cleaner
-    inputs.uds.packages.x86_64-linux.uds-gateway
-    inputs.uds.packages.x86_64-linux.psql-user-provisioner
-    inputs.uds.packages.x86_64-linux.edsctl
-    inputs.uds.packages.x86_64-linux.sdsctl
-    inputs.uds.packages.x86_64-linux.smsctl
-    inputs.uds.packages.x86_64-linux.uds-cqlsh
-    inputs.uds.packages.x86_64-linux.uds-psql
-    inputs.uds.packages.x86_64-linux.uds-redis-cli
-    inputs.man-tools.packages.x86_64-linux.add_source           
-    inputs.man-tools.packages.x86_64-linux.aws-connector        
-    inputs.man-tools.packages.x86_64-linux.aws-mfa              
-    inputs.man-tools.packages.x86_64-linux.circleci-envset      
-    inputs.man-tools.packages.x86_64-linux.gh-actions-aws       
-    inputs.man-tools.packages.x86_64-linux.gh-actions-go-mod    
-    inputs.man-tools.packages.x86_64-linux.ghctl                
-    inputs.man-tools.packages.x86_64-linux.grin-import          
-    inputs.man-tools.packages.x86_64-linux.image-rollback       
-    inputs.man-tools.packages.x86_64-linux.okta-go-mod          
-    inputs.man-tools.packages.x86_64-linux.uds-aws-env          
-    inputs.man-tools.packages.x86_64-linux.youtube_amplification
-    inputs.helm-charts.packages.x86_64-linux.uchart
-    inputs.tcurl.packages.x86_64-linux.tcurl
+    inputs.uds.packages.${pkgs.system}.uds-gateway
+    pass-wayland
+    docker
+    docker-credential-helpers
   ];
 
   dconf.enable = true;
@@ -246,10 +154,6 @@
     fi
     [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-    # go path
-    export PATH=$PATH:/usr/local/go/bin
-    export PATH=$PATH:$HOME/go/bin
-    
     # uds-gateway alias to save time
     #alias uds-gateway="sudo -E /home/xgoffin/go/bin/uds-gateway"
     #alias uds-gateway="sudo -E env "PATH=$PATH" /home/xgoffin/go/bin/uds-gateway"
@@ -277,8 +181,6 @@
     
     cowsick(){ for i in {1..10}; do xcowsay "I'm sick of this shit brother" & done; }
     
-    source <(kubectl completion bash)
-
     alias ":q"="exit"
     alias rubocop="rubocop -c ~/Code/action-rubocop/.rubocop.yml"
 
@@ -352,7 +254,7 @@
       set backspace=eol,start,indent
       set whichwrap+=<,>,h,l
        
-      " Ignore case when seahttps://www.reddit.com/r/gnome/comments/1smzxdj/am_i_hallucinating_or_was_there_a_logout_option/rching
+      " Ignore case when searching
       set ignorecase
        
       " When searching try to be smart about cases
@@ -473,6 +375,13 @@
     '';
   };
 
+  programs.direnv = {
+    enable = true;
+    enableBashIntegration = true;
+    nix-direnv.enable = true;
+    silent = true;
+  };
+
   xdg.configFile."autostart/slack.desktop".text = ''
     [Desktop Entry]
     Type=Application
@@ -510,21 +419,9 @@
     Type=Application
     Name=Clocks
     Exec=gnome-clocks
-    X-GNOME-Autostart-enabled=true
   '';
 
   home.sessionVariables = {
-    LD_LIBRARY_PATH = lib.makeLibraryPath [
-      pkgs.curl
-      pkgs.libpq
-      pkgs.sqlite
-      pkgs.zlib
-      pkgs.icu
-      pkgs.openssl
-      pkgs.libyaml
-    ];
-    PKG_CONFIG_PATH = "${pkgs.libyaml.dev}/lib/pkgconfig:${pkgs.libpq.dev}/lib/pkgconfig:${pkgs.zlib.dev}/lib/pkgconfig:${pkgs.openssl.dev}/lib/pkgconfig";
-    CPATH = "${pkgs.libyaml.dev}/include:${pkgs.libpq.dev}/include:${pkgs.zlib.dev}/include:${pkgs.openssl.dev}/include";
     EDITOR = "vim";
   };
 }

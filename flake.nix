@@ -1,19 +1,12 @@
 {
-  description = "A template that shows all standard flake outputs";
+  description = "Work system flake";
 
   inputs = {
-    # It is also possible to "inherit" an input from another input. This is useful to minimize
-    # flake dependencies. For example, the following sets the nixpkgs input of the top-level flake
-    # to be equal to the nixpkgs input of the nixops input of the top-level flake:
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # The value of the follows attribute is a sequence of input names denoting the path
-    # of inputs to be followed from the root flake. Overrides and follows can be combined, e.g.
-    nixops.url = "nixops";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
@@ -38,20 +31,28 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, nixos-hardware, ... }: {
+  outputs = inputs@{ self, nixpkgs, home-manager, nixos-hardware, ... }:
+  let
+    system = "x86_64-linux";
+    lib = nixpkgs.lib;
+    pkgs = import nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+    };
+  in {
     # nixosConfigurations."<hostname>".config.system.build.toplevel must be a derivation
     nixosConfigurations.nixos= nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
+      inherit system;
 
       modules = [
-    	./configuration.nix
-            
-    	home-manager.nixosModules.default
+        ./configuration.nix
+
+        home-manager.nixosModules.default
         {
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-	        backupFileExtension = "bak";
+            backupFileExtension = "bak";
             extraSpecialArgs = { inherit inputs; };
             users.xgoffin = ./home.nix;
           };
@@ -73,6 +74,11 @@
 
         nixos-hardware.nixosModules.dell-xps-13-9315
       ];
+    };
+
+    devShells.${system}.default = import ./shell.nix {
+      inherit pkgs inputs;
+      lib = nixpkgs.lib;
     };
   };
 }
