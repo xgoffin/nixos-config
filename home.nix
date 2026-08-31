@@ -34,7 +34,6 @@
     gnomeExtensions.no-overview
     gnomeExtensions.resource-monitor
     gnomeExtensions.junk-notification-cleaner
-    inputs.uds.packages.${pkgs.system}.uds-gateway
     pass-wayland
     docker
     docker-credential-helpers

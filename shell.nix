@@ -17,12 +17,22 @@ pkgs.mkShell {
       ]
     ))
     uv
-    (ruby.withPackages (
+    (ruby_3_4.withPackages (
       ps: with ps; [
         ruby-lsp
         rubocop
         date
-        bundler
+        (bundler.overrideAttrs (old: let
+          version = "4.0.10";
+        in {
+          version = version;
+          name = "bundler-${version}";
+          suffix = version;
+          src = fetchurl {
+            url = "https://rubygems.org/downloads/bundler-${version}.gem";
+            hash = "sha256-7nOnWr5hD08rtN7OdFlYfrGbMCdv0JmCV+yb1vZM4+k=";
+          };
+        }))
         psych
         typhoeus
         racc
@@ -54,6 +64,7 @@ pkgs.mkShell {
     zlib
     pkg-config
     sqlite
+    poppler-utils
     (pkgs.stdenv.mkDerivation {
       name = "thrift";
 
@@ -73,27 +84,30 @@ pkgs.mkShell {
           chmod +x $out/bin/thrift
       '';
     })
-    inputs.uds.packages.${pkgs.system}.psql-user-provisioner
-    inputs.uds.packages.${pkgs.system}.edsctl
-    inputs.uds.packages.${pkgs.system}.sdsctl
-    inputs.uds.packages.${pkgs.system}.smsctl
-    inputs.uds.packages.${pkgs.system}.uds-cqlsh
-    inputs.uds.packages.${pkgs.system}.uds-psql
-    inputs.uds.packages.${pkgs.system}.uds-redis-cli
-    inputs.man-tools.packages.${pkgs.system}.add_source           
-    inputs.man-tools.packages.${pkgs.system}.aws-connector        
-    inputs.man-tools.packages.${pkgs.system}.aws-mfa              
-    inputs.man-tools.packages.${pkgs.system}.circleci-envset      
-    inputs.man-tools.packages.${pkgs.system}.gh-actions-aws       
-    inputs.man-tools.packages.${pkgs.system}.gh-actions-go-mod    
-    inputs.man-tools.packages.${pkgs.system}.ghctl                
-    inputs.man-tools.packages.${pkgs.system}.grin-import          
-    inputs.man-tools.packages.${pkgs.system}.image-rollback       
-    inputs.man-tools.packages.${pkgs.system}.okta-go-mod          
-    inputs.man-tools.packages.${pkgs.system}.uds-aws-env          
-    inputs.man-tools.packages.${pkgs.system}.youtube_amplification
+    (pkgs.stdenv.mkDerivation {
+      name = "fleetctl";
+
+      src = pkgs.fetchurl {
+        url = "https://github.com/AlexisMontagne/fleet/releases/download/v1.0.0/fleetctl-linux-amd64";
+        sha256 = "sha256-Nk0lfLanuGqB+Gm5Pd07Xa+PkUPh8bKfr0AwWMuIejg=";
+      };
+
+      nativeBuildInputs = [ pkgs.autoPatchelfHook ];
+      buildInputs = [ pkgs.stdenv.cc.cc.lib ];
+
+      dontUnpack = true;
+
+      installPhase = ''
+          mkdir -p $out/bin
+          cp $src $out/bin/fleetctl
+          chmod +x $out/bin/fleetctl
+      '';
+    })
+    inputs.uds.packages.${pkgs.system}.default
+    inputs.man-tools.packages.${pkgs.system}.default
     inputs.helm-charts.packages.${pkgs.system}.uchart
     inputs.tcurl.packages.${pkgs.system}.tcurl
+    inputs.thrift-ls.packages.${pkgs.system}.default
   ];
   env = {
     LIBRARY_PATH = lib.makeLibraryPath [
@@ -109,6 +123,10 @@ pkgs.mkShell {
       + "${pkgs.libpq.dev}/include:"
       + "${pkgs.zlib.dev}/include:"
       + "${pkgs.openssl.dev}/include";
+      HISTFILE = "/home/xgoffin/.bash_history";
+      HISTSIZE = "-1";
+      HISTFILESIZE = "-1";
+      HISTCONTROL = "ignoreboth";
   };
   shellHook = ''
     export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [
@@ -120,6 +138,8 @@ pkgs.mkShell {
       pkgs.openssl
       pkgs.libyaml
     ]}:$LD_LIBRARY_PATH"
+    set -o history
+    shopt -s histappend
     if command -v kubectl >/dev/null 2>&1; then
       source <(kubectl completion bash)
     fi

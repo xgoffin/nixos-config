@@ -29,6 +29,9 @@
       url = "path:/home/xgoffin/Code/tcurl";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    thrift-ls = {
+      url = "github:karitham/thrift-ls";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, home-manager, nixos-hardware, ... }:
@@ -46,6 +49,7 @@
 
       modules = [
         ./configuration.nix
+        ./ninjaone.nix
 
         home-manager.nixosModules.default
         {
@@ -73,6 +77,13 @@
         })
 
         nixos-hardware.nixosModules.dell-xps-13-9315
+
+        {
+          services.ninjaone = {
+            enable = true;
+            installerPath = "/opt/NinjaOne-Agent-UpfluenceLyon-Bureauprincipal-Auto-x86-64.deb";
+          };
+        }
       ];
     };
 
