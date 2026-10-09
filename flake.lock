@@ -77,16 +77,32 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1785104993,
-        "narHash": "sha256-eKbrvPoAOFutbYMdbB3r5EQVmFxKv24iKqHPPUXA0gM=",
+        "lastModified": 1789885152,
+        "narHash": "sha256-mDNo95riUw8k0MA2Btzj/OuiMcfLKofqIliLYsLbrSY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "8623c4c20aa4ca2f5fb81510d2944066c3fb0d96",
+        "rev": "6d663c0533ff269008fb84e45930151e37c99db9",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
         "ref": "nixos-26.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-unstable": {
+      "locked": {
+        "lastModified": 1790185690,
+        "narHash": "sha256-xJ+X4hBtOcAFGBOe5nAMyMUeF9foJBmIOu3NjBqBycU=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "4975466d324710c576dc11ad614684e6bd8cad8e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -113,9 +129,28 @@
         "man-tools": "man-tools",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-unstable": "nixpkgs-unstable",
+        "tbuild": "tbuild",
         "tcurl": "tcurl",
         "thrift-ls": "thrift-ls",
         "uds": "uds"
+      }
+    },
+    "tbuild": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788794912,
+        "narHash": "sha256-1jtNDaFku4D4M4vFogsrhGQeO3wfH3Ni8jE1ULPPoME=",
+        "path": "/home/xgoffin/Code/tbuild",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/xgoffin/Code/tbuild",
+        "type": "path"
       }
     },
     "tcurl": {
@@ -125,8 +160,8 @@
         ]
       },
       "locked": {
-        "lastModified": 1786719555,
-        "narHash": "sha256-2FtvOzmiZiqBNDaq4e2AILYLGFqffKHWi9Apd+NDP4I=",
+        "lastModified": 1791551260,
+        "narHash": "sha256-Py7zQTDFj7xK1BOu+9bx94x66NDpLO221luyaa0myK8=",
         "path": "/home/xgoffin/Code/tcurl",
         "type": "path"
       },
@@ -160,8 +195,8 @@
         ]
       },
       "locked": {
-        "lastModified": 1786719605,
-        "narHash": "sha256-ekrMiJdtqSslvXEI2eLyjAdPFdufOEVryMkpxMN+vFE=",
+        "lastModified": 1790260636,
+        "narHash": "sha256-m5YfpcLYwusWxBn0pgVx6VHgOjJLR3VcSeXmWCVuuSo=",
         "path": "/home/xgoffin/Code/uds",
         "type": "path"
       },

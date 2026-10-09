@@ -91,7 +91,7 @@
   users.users."xgoffin" = {
     isNormalUser = true;
     description = "Xavier Goffin";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "video" ];
   };
 
   # Allow unfree packages

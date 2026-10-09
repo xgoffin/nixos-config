@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -16,14 +17,17 @@
     man-tools = {
       url = "path:/home/xgoffin/Code/man";
       inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
     uds = {
       url = "path:/home/xgoffin/Code/uds";
       inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
     helm-charts = {
       url = "path:/home/xgoffin/Code/helm-charts";
       inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
     tcurl = {
       url = "path:/home/xgoffin/Code/tcurl";
@@ -31,6 +35,11 @@
     };
     thrift-ls = {
       url = "github:karitham/thrift-ls";
+    };
+    tbuild = {
+      url = "path:/home/xgoffin/Code/tbuild";
+      inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
   };
 
